@@ -1,0 +1,31 @@
+[package]
+name = "nitronanite"
+description = "a simple discord client"
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+chrono.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+
+[workspace]
+members = ["."]
+
+[workspace.package]
+version = "0.1.0-alpha.0"
+edition = "2024"
+authors = ["Ruri <ruri@lithionite.org>"]
+
+[workspace.dependencies]
+anyhow = "1"
+chrono = "0.4"
+reqwest = { version = "0.13", features = ["json", "query"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] } 
