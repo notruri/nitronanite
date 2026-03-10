@@ -698,6 +698,7 @@ dependencies = [
  "nitronanite-models",
  "reqwest",
  "snownite",
+ "thiserror 2.0.18",
 ]
 
 [[package]]

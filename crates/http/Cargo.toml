@@ -8,6 +8,7 @@ authors.workspace = true
 nitronanite-models.workspace = true
 reqwest.workspace = true
 snownite.workspace = true
+thiserror.workspace = true
 
 [lib]
 path = "src/client.rs"

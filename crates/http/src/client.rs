@@ -1,8 +1,7 @@
 use reqwest::StatusCode;
 use snownite::Snowflake;
-use std::error::Error;
-use std::fmt;
 use std::time::Duration;
+use thiserror::Error;
 
 use nitronanite_models::Message;
 
@@ -25,62 +24,26 @@ pub struct HttpBuilder {
     base_url: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ClientBuildError {
+    #[error("missing discord token")]
     MissingToken,
+    #[error("discord token cannot be empty")]
     EmptyToken,
+    #[error("missing user-agent")]
     MissingUserAgent,
+    #[error("user-agent cannot be empty")]
     EmptyUserAgent,
+    #[error("failed to build reqwest client: {0}")]
     RequestClient(reqwest::Error),
 }
 
-impl fmt::Display for ClientBuildError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ClientBuildError::MissingToken => write!(f, "missing discord token"),
-            ClientBuildError::EmptyToken => write!(f, "discord token cannot be empty"),
-            ClientBuildError::MissingUserAgent => write!(f, "missing user-agent"),
-            ClientBuildError::EmptyUserAgent => write!(f, "user-agent cannot be empty"),
-            ClientBuildError::RequestClient(error) => {
-                write!(f, "failed to build reqwest client: {error}")
-            }
-        }
-    }
-}
-
-impl Error for ClientBuildError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            ClientBuildError::RequestClient(error) => Some(error),
-            _ => None,
-        }
-    }
-}
-
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum ClientError {
+    #[error("request failed: {0}")]
     Request(reqwest::Error),
+    #[error("discord api returned {status}: {body}")]
     Status { status: StatusCode, body: String },
-}
-
-impl fmt::Display for ClientError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ClientError::Request(error) => write!(f, "request failed: {error}"),
-            ClientError::Status { status, body } => {
-                write!(f, "discord api returned {status}: {body}")
-            }
-        }
-    }
-}
-
-impl Error for ClientError {
-    fn source(&self) -> Option<&(dyn Error + 'static)> {
-        match self {
-            ClientError::Request(error) => Some(error),
-            ClientError::Status { .. } => None,
-        }
-    }
 }
 
 impl Default for HttpBuilder {

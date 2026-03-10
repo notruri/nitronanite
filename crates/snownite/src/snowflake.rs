@@ -1,9 +1,9 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::de::{self, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-use std::error::Error;
 use std::fmt;
 use std::num::ParseIntError;
+use thiserror::Error;
 
 pub const DISCORD_EPOCH_MS: u64 = 1_420_070_400_000;
 
@@ -16,26 +16,15 @@ pub struct Snowflake {
     pub increment: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum SnowflakeError {
+    #[error("snowflake id is empty")]
     EmptyId,
+    #[error("invalid snowflake id: {0}")]
     InvalidId(ParseIntError),
+    #[error("timestamp is out of range for chrono: {0}")]
     TimestampOutOfRange(u64),
 }
-
-impl fmt::Display for SnowflakeError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            SnowflakeError::EmptyId => write!(f, "snowflake id is empty"),
-            SnowflakeError::InvalidId(error) => write!(f, "invalid snowflake id: {error}"),
-            SnowflakeError::TimestampOutOfRange(value) => {
-                write!(f, "timestamp is out of range for chrono: {value}")
-            }
-        }
-    }
-}
-
-impl Error for SnowflakeError {}
 
 impl Snowflake {
     pub fn from_raw(raw: u64) -> Self {
