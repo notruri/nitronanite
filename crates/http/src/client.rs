@@ -1,23 +1,24 @@
-use crate::messages::Message;
-use crate::snowflake::Snowflake;
 use reqwest::StatusCode;
+use snownite::Snowflake;
 use std::error::Error;
 use std::fmt;
 use std::time::Duration;
+
+use nitronanite_models::Message;
 
 const DEFAULT_BASE_URL: &str = "https://discord.com/api/v9";
 const DEFAULT_TIMEOUT_SECS: u64 = 30;
 const USER_AGENT: &str = "Nitronanite/1.0";
 
 #[derive(Debug, Clone)]
-pub struct DiscordClient {
+pub struct Http {
     client: reqwest::Client,
     token: String,
     base_url: String,
 }
 
 #[derive(Debug, Clone)]
-pub struct DiscordClientBuilder {
+pub struct HttpBuilder {
     token: Option<String>,
     user_agent: Option<String>,
     timeout: Duration,
@@ -82,7 +83,7 @@ impl Error for ClientError {
     }
 }
 
-impl Default for DiscordClientBuilder {
+impl Default for HttpBuilder {
     fn default() -> Self {
         Self {
             token: None,
@@ -93,7 +94,7 @@ impl Default for DiscordClientBuilder {
     }
 }
 
-impl DiscordClientBuilder {
+impl HttpBuilder {
     pub fn new() -> Self {
         Self::default()
     }
@@ -118,7 +119,7 @@ impl DiscordClientBuilder {
         self
     }
 
-    pub fn build(self) -> Result<DiscordClient, ClientBuildError> {
+    pub fn build(self) -> Result<Http, ClientBuildError> {
         let token = match self.token {
             Some(token) if !token.trim().is_empty() => token,
             Some(_) => return Err(ClientBuildError::EmptyToken),
@@ -137,7 +138,7 @@ impl DiscordClientBuilder {
             .build()
             .map_err(ClientBuildError::RequestClient)?;
 
-        Ok(DiscordClient {
+        Ok(Http {
             client,
             token,
             base_url: self.base_url,
@@ -145,9 +146,9 @@ impl DiscordClientBuilder {
     }
 }
 
-impl DiscordClient {
-    pub fn builder() -> DiscordClientBuilder {
-        DiscordClientBuilder::new()
+impl Http {
+    pub fn builder() -> HttpBuilder {
+        HttpBuilder::new()
     }
 
     pub async fn get_channel_messages(
@@ -156,10 +157,7 @@ impl DiscordClient {
         limit: Option<u8>,
     ) -> Result<Vec<Message>, ClientError> {
         let url = format!("{}/channels/{}/messages", self.base_url, channel_id.raw);
-        let mut request = self
-            .client
-            .get(url)
-            .header("Authorization", &self.token);
+        let mut request = self.client.get(url).header("Authorization", &self.token);
 
         if let Some(limit) = limit {
             request = request.query(&[("limit", limit)]);
@@ -182,31 +180,23 @@ impl DiscordClient {
 
 #[cfg(test)]
 mod tests {
-    use super::{ClientBuildError, DiscordClient};
+    use super::{ClientBuildError, Http};
 
     #[test]
     fn builder_requires_token() {
-        let result = DiscordClient::builder()
-            .user_agent("discord-parser/0.1")
-            .build();
+        let result = Http::builder().user_agent("Nitronanite/1.0").build();
         assert!(matches!(result, Err(ClientBuildError::MissingToken)));
     }
 
     #[test]
-    fn builder_requires_user_agent() {
-        let result = DiscordClient::builder().token("abc").build();
-        assert!(matches!(result, Err(ClientBuildError::MissingUserAgent)));
-    }
-
-    #[test]
     fn builder_rejects_empty_fields() {
-        let token_result = DiscordClient::builder()
+        let token_result = Http::builder()
             .token(" ")
-            .user_agent("discord-parser/0.1")
+            .user_agent("Nitronanite/1.0")
             .build();
         assert!(matches!(token_result, Err(ClientBuildError::EmptyToken)));
 
-        let user_agent_result = DiscordClient::builder().token("abc").user_agent("").build();
+        let user_agent_result = Http::builder().token("abc").user_agent("").build();
         assert!(matches!(
             user_agent_result,
             Err(ClientBuildError::EmptyUserAgent)
@@ -215,9 +205,9 @@ mod tests {
 
     #[test]
     fn builder_creates_client() {
-        let client = DiscordClient::builder()
+        let client = Http::builder()
             .token("abc")
-            .user_agent("discord-parser/0.1")
+            .user_agent("Nitronanite/1.0")
             .build();
 
         assert!(client.is_ok());

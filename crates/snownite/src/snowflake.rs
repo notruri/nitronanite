@@ -118,9 +118,7 @@ fn parse_id(id: &str) -> Result<u64, SnowflakeError> {
         return Err(SnowflakeError::EmptyId);
     }
 
-    trimmed
-        .parse::<u64>()
-        .map_err(SnowflakeError::InvalidId)
+    trimmed.parse::<u64>().map_err(SnowflakeError::InvalidId)
 }
 
 fn discord_timestamp_ms(id: u64) -> u64 {
@@ -128,8 +126,8 @@ fn discord_timestamp_ms(id: u64) -> u64 {
 }
 
 fn timestamp_to_chrono(timestamp_ms: u64) -> Result<DateTime<Utc>, SnowflakeError> {
-    let timestamp_ms =
-        i64::try_from(timestamp_ms).map_err(|_| SnowflakeError::TimestampOutOfRange(timestamp_ms))?;
+    let timestamp_ms = i64::try_from(timestamp_ms)
+        .map_err(|_| SnowflakeError::TimestampOutOfRange(timestamp_ms))?;
 
     Utc.timestamp_millis_opt(timestamp_ms)
         .single()
@@ -138,7 +136,9 @@ fn timestamp_to_chrono(timestamp_ms: u64) -> Result<DateTime<Utc>, SnowflakeErro
 
 #[cfg(test)]
 mod tests {
-    use super::{DISCORD_EPOCH_MS, Snowflake, SnowflakeError, Timestamp, parse_id, timestamp_to_chrono};
+    use super::{
+        DISCORD_EPOCH_MS, Snowflake, SnowflakeError, Timestamp, parse_id, timestamp_to_chrono,
+    };
     use serde::Deserialize;
 
     #[test]

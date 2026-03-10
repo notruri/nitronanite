@@ -6,15 +6,12 @@ authors.workspace = true
 
 [dependencies]
 anyhow.workspace = true
-chrono.workspace = true
-reqwest.workspace = true
-serde.workspace = true
-serde_json.workspace = true
-thiserror.workspace = true
+nitronanite-http.workspace = true
+snownite.workspace = true
 tokio.workspace = true
 
 [workspace]
-members = ["."]
+members = [".", "crates/*"]
 
 [workspace.package]
 version = "0.1.0-alpha.0"
@@ -22,6 +19,9 @@ edition = "2024"
 authors = ["Ruri <ruri@lithionite.org>"]
 
 [workspace.dependencies]
+nitronanite-http = { version = "0.1.0-alpha.0", path = "crates/http" }
+nitronanite-models = { version = "0.1.0-alpha.0", path = "crates/models" }
+snownite = { version = "0.1.0-alpha.0", path = "crates/snownite" }
 anyhow = "1"
 chrono = "0.4"
 reqwest = { version = "0.13", features = ["json", "query"] }

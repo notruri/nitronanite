@@ -1,0 +1,13 @@
+[package]
+name = "nitronanite-http"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+nitronanite-models.workspace = true
+reqwest.workspace = true
+snownite.workspace = true
+
+[lib]
+path = "src/client.rs"

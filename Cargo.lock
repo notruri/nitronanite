@@ -686,12 +686,27 @@ name = "nitronanite"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "chrono",
+ "nitronanite-http",
+ "snownite",
+ "tokio",
+]
+
+[[package]]
+name = "nitronanite-http"
+version = "0.1.0-alpha.0"
+dependencies = [
+ "nitronanite-models",
  "reqwest",
+ "snownite",
+]
+
+[[package]]
+name = "nitronanite-models"
+version = "0.1.0-alpha.0"
+dependencies = [
  "serde",
  "serde_json",
- "thiserror 2.0.18",
- "tokio",
+ "snownite",
 ]
 
 [[package]]
@@ -1169,6 +1184,16 @@ name = "smallvec"
 version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "67b1b7a3b5fe4f1376887184045fcf45c69e92af734b7aaddc05fb777b6fbd03"
+
+[[package]]
+name = "snownite"
+version = "0.1.0-alpha.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+]
 
 [[package]]
 name = "socket2"
