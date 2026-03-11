@@ -1,5 +1,5 @@
 [package]
-name = "snownite"
+name = "nitronanite-snowflake"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true

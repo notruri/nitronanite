@@ -1,6 +1,6 @@
+use nitronanite_snowflake::Snowflake;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use snownite::Snowflake;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Message {

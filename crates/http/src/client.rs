@@ -1,9 +1,9 @@
 use reqwest::StatusCode;
-use snownite::Snowflake;
 use std::time::Duration;
 use thiserror::Error;
 
 use nitronanite_models::Message;
+use nitronanite_snowflake::Snowflake;
 
 const DEFAULT_BASE_URL: &str = "https://discord.com/api/v9";
 const DEFAULT_TIMEOUT_SECS: u64 = 30;

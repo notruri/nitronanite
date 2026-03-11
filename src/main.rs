@@ -1,5 +1,5 @@
 use nitronanite_http::*;
-use snownite::*;
+use nitronanite_snowflake::*;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
